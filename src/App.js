@@ -1,23 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+
+import "./App.css";
+import instance from "./axios";
+import React, { useState } from "react";
+
+/**
+ * 1 check for city and temperature when conditionally rendering
+ * 2 make the app look nice
+ * 3 display other weather data you find useful
+ * 4 post in slack
+ */
+
+const APIkey = 'c6105ea9603d94baa65e2f823f08e5a0'
 
 function App() {
+  const [city, setCity] = useState("");
+  const [temperature, setTemperature] = useState("");
+
+  const getWeather = async ()=>{
+    const response = await instance.get(`/weather?q=${city}&appid=${APIkey}&units=imperial`)
+    setTemperature(response.data.main.temp)
+  }
+
+  console.log(city)
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {temperature ? (
+        <h2>Hello {city} temperature is {temperature}</h2>
+      ):(
+        <h1>Hello World</h1>
+      )}
+      <input
+        placeholder={"Type in a city..."}
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+
+      />
+      <button onClick={()=>getWeather()}>Get weather</button>
     </div>
   );
 }
